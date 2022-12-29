@@ -1,5 +1,8 @@
 from zeep import Client
 from lxml import etree
+import json
+import pandas as pd
+
 
 """
 Várt válasz:
@@ -38,24 +41,35 @@ class XMLParser:
             rates[date] = rate
 
         return rates
-
 # innentől kézi XML feldolgozás, mert az MNB lusta volt XSD sémát mellékelni a servicehez
-def process_xml(xml_data):
-    root = etree.fromstring(xml_data)
-    datum = root[0].attrib['date']
-    print('Dátum: {0}'.format(datum))
-    print('Deviza\tEgység\tÁrfolyam')
-    for currency in root[0]:
-        devizanem = currency.attrib['curr']
-        arfolyam = float(currency.text.replace(',', '.'))
-        egyseg = int(currency.attrib['unit'])
-        print('{0}\t{1}\t{2}'.format(devizanem, egyseg, arfolyam))
+    def process_xml(self, xml_data):
+        root = etree.fromstring(xml_data)
+        datum = root[0].attrib['date']
+        print('Dátum: {0}'.format(datum))
+        # print('Deviza\tEgység\tÁrfolyam')
+        currencies = []
 
+        for currency in root[0]:
+            devizanem = currency.attrib['curr']
+            arfolyam = float(currency.text.replace(',', '.'))
+            egyseg = int(currency.attrib['unit'])
+            # print('{0}\t{1}\t{2}'.format(devizanem, egyseg, arfolyam))
+            currency_data = {
+                        'name': devizanem,
+                        'unit': egyseg,
+                        'rate': arfolyam
+                    }
+            currencies.append(currency_data)
+        return json.dumps(currencies)
+
+    
 # Create a client for interacting with the MNB web service
 mnb_client = MNBClient()
+xml_parser = XMLParser()
 
 result = mnb_client.get_exchange_rates()
-process_xml(result)
+print(xml_parser.process_xml(result))
+
 
 xml_parser = XMLParser()
 result = mnb_client.get_currencies("2022-01-01", "2022-12-28", "USD")

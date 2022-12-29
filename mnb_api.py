@@ -1,4 +1,4 @@
-from mnb import MNBClient
+from mnb import MNBClient, XMLParser
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -10,10 +10,11 @@ def get_exchange_rate():
     # Make the request to the MNB web service
     mnb_client = MNBClient()
     result = mnb_client.get_exchange_rates()
-    
+    xml_parser = XMLParser()
+
 
     # Return the exchange rate as a JSON response
-    return {'currency': currency, 'date': date, 'rate': rate}
+    return {xml_parser}
 
 if __name__ == '__main__':
     app.run()
