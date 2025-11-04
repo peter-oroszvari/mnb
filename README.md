@@ -1,310 +1,299 @@
-# MNB
-Az MNB (Magyar Nemzeti Bank) napi árfolyamainak elérése Python-nal
+# MNB Exchange Rate Fetcher
 
-Ez a script csak egy proof-of-concept, kilistázza az aktuálisan érvényes MNB árfolyamokat, valamint az érvényesség dátumát.
+A modern Python application for fetching exchange rates from the Hungarian National Bank (MNB) SOAP web service with support for multiple output formats, comprehensive error handling, and a flexible CLI interface.
 
-A SOAP service-szel való kommunikációt a [python-zeep](https://github.com/mvantellingen/python-zeep) könyvtár valósítja meg.
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Használata
-### Függőségek telepítése
-```
+## Features
+
+- 🚀 **Modern Python**: Uses type hints, dataclasses, and async-ready architecture
+- 📊 **Multiple Output Formats**: Support for table, JSON, and CSV formats
+- 🎯 **Flexible CLI**: Comprehensive command-line interface with argparse
+- 🔍 **Error Handling**: Robust error handling with custom exceptions and detailed logging
+- ✅ **Well Tested**: Comprehensive unit tests with pytest
+- 📝 **Well Documented**: Full docstrings and type annotations
+- 🔄 **Both Current and Historical**: Fetch current rates or historical data for any period
+
+## Installation
+
+### Prerequisites
+
+- Python 3.8 or higher
+- pip package manager
+
+### Install Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-### Futtatás
+### Development Installation
+
+For development work with testing and code quality tools:
+
+```bash
+pip install -r requirements-dev.txt
 ```
+
+## Usage
+
+### Basic Usage
+
+Fetch current exchange rates in table format:
+
+```bash
 python mnb.py
 ```
 
-### Kimenet
+Output:
 ```
-Dátum: 2022-12-28
-Deviza  Egység  Árfolyam
-AUD     1       256.16
-BGN     1       206.02
-BRL     1       71.56
-CAD     1       279.82
-CHF     1       407.25
-CNY     1       54.32
-CZK     1       16.63
-DKK     1       54.19
-EUR     1       402.95
-GBP     1       455.72
-HKD     1       48.62
-HRK     1       53.46
-IDR     100     2.41
-ILS     1       107.77
-INR     1       4.57
-ISK     1       2.65
-JPY     100     282.62
-KRW     100     29.85
-MXN     1       19.5
-MYR     1       85.66
-NOK     1       38.47
-NZD     1       238.73
-PHP     1       6.74
-PLN     1       85.82
-RON     1       81.59
-RSD     1       3.43
-RUB     1       5.33
-SEK     1       36.21
-SGD     1       280.86
-THB     1       10.9
-TRY     1       20.24
-UAH     1       10.26
-USD     1       378.82
-ZAR     1       22.07
-2022-12-28: 378,82
-2022-12-27: 377,04
-2022-12-23: 377,6
-2022-12-22: 377,82000
-2022-12-21: 379,31000
-2022-12-20: 379,02
-2022-12-19: 380,36
-2022-12-16: 382,67
-2022-12-15: 381,97
-2022-12-14: 383,05
-2022-12-13: 390,04
-2022-12-12: 395,69
-2022-12-09: 393,01
-2022-12-08: 394,94
-2022-12-07: 391,90
-2022-12-06: 394,84
-2022-12-05: 387,65
-2022-12-02: 388,17
-2022-12-01: 392,68
-2022-11-30: 393,54
-2022-11-29: 393,67
-2022-11-28: 390,83
-2022-11-25: 397,00
-2022-11-24: 397,77
-2022-11-23: 393,05
-2022-11-22: 397,77
-2022-11-21: 401,31
-2022-11-18: 395,40
-2022-11-17: 397,12
-2022-11-16: 390,72
-2022-11-15: 390,12
-2022-11-14: 393,83
-2022-11-11: 393,05
-2022-11-10: 403,48
-2022-11-09: 403,20
-2022-11-08: 400,94
-2022-11-07: 402,34
-2022-11-04: 412,05
-2022-11-03: 419,87
-2022-11-02: 412,22
-2022-10-28: 414,46
-2022-10-27: 405,28
-2022-10-26: 409,01
-2022-10-25: 418,68
-2022-10-24: 419,77
-2022-10-21: 423,52
-2022-10-20: 421,65
-2022-10-19: 420,63
-2022-10-18: 419,65
-2022-10-17: 430,48
-2022-10-14: 430,37
-2022-10-13: 445,73
-2022-10-12: 442,93
-2022-10-11: 440,76
-2022-10-10: 440,42
-2022-10-07: 432,33
-2022-10-06: 428,28
-2022-10-05: 424,61
-2022-10-04: 422,78
-2022-10-03: 430,65
-2022-09-30: 428,57
-2022-09-29: 434,73
-2022-09-28: 430,37
-2022-09-27: 423,37
-2022-09-26: 419,68
-2022-09-23: 416,58
-2022-09-22: 411,10
-2022-09-21: 407,13
-2022-09-20: 398,54
-2022-09-19: 401,94
-2022-09-16: 407,00
-2022-09-15: 405,93
-2022-09-14: 402,45
-2022-09-13: 390,37
-2022-09-12: 387,62
-2022-09-09: 391,29
-2022-09-08: 397,77
-2022-09-07: 405,22
-2022-09-06: 405,08
-2022-09-05: 407,46
-2022-09-02: 400,04
-2022-09-01: 399,76
-2022-08-31: 405,88
-2022-08-30: 406,27
-2022-08-29: 413,32
-2022-08-26: 409,45
-2022-08-25: 408,06
-2022-08-24: 413,47
-2022-08-23: 413,65
-2022-08-22: 405,26
-2022-08-19: 403,26
-2022-08-18: 398,40
-2022-08-17: 400,08
-2022-08-16: 398,47
-2022-08-15: 389,27
-2022-08-12: 381,48
-2022-08-11: 381,58
-2022-08-10: 392,54
-2022-08-09: 385,76
-2022-08-08: 385,26
-2022-08-05: 386,17
-2022-08-04: 389,02
-2022-08-03: 388,70
-2022-08-02: 388,57
-2022-08-01: 393,21
-2022-07-29: 395,42
-2022-07-28: 398,00
-2022-07-27: 398,44
-2022-07-26: 390,90
-2022-07-25: 387,68
-2022-07-22: 391,37
-2022-07-21: 394,06
-2022-07-20: 388,27
-2022-07-19: 389,59
-2022-07-18: 397,83
-2022-07-15: 402,83
-2022-07-14: 409,00
-2022-07-13: 408,92
-2022-07-12: 413,33
-2022-07-11: 404,19
-2022-07-08: 401,06
-2022-07-07: 404,99
-2022-07-06: 400,21
-2022-07-05: 392,73
-2022-07-04: 383,27
-2022-07-01: 381,24
-2022-06-30: 379,99
-2022-06-29: 377,01
-2022-06-28: 378,32
-2022-06-27: 381,29
-2022-06-24: 380,12
-2022-06-23: 380,77
-2022-06-22: 376,34
-2022-06-21: 374,74
-2022-06-20: 380,25
-2022-06-17: 379,10
-2022-06-16: 379,98
-2022-06-15: 379,78
-2022-06-14: 380,82
-2022-06-13: 379,66
-2022-06-10: 375,05
-2022-06-09: 368,34
-2022-06-08: 365,11
-2022-06-07: 364,80
-2022-06-03: 367,01
-2022-06-02: 369,24
-2022-06-01: 370,43
-2022-05-31: 367,31
-2022-05-30: 365,12
-2022-05-27: 366,10
-2022-05-26: 368,20
-2022-05-25: 360,85
-2022-05-24: 357,99
-2022-05-23: 359,38
-2022-05-20: 363,57
-2022-05-19: 367,73
-2022-05-18: 366,65
-2022-05-17: 369,40
-2022-05-16: 368,72
-2022-05-13: 369,02
-2022-05-12: 366,49
-2022-05-11: 359,07
-2022-05-10: 358,36
-2022-05-09: 365,12
-2022-05-06: 360,34
-2022-05-05: 356,85
-2022-05-04: 360,13
-2022-05-03: 364,17
-2022-05-02: 359,14
-2022-04-29: 356,78
-2022-04-28: 358,85
-2022-04-27: 359,18
-2022-04-26: 352,16
-2022-04-25: 347,24
-2022-04-22: 343,62
-2022-04-21: 340,23
-2022-04-20: 342,33
-2022-04-19: 345,23
-2022-04-14: 344,77
-2022-04-13: 348,91
-2022-04-12: 348,60
-2022-04-11: 348,36
-2022-04-08: 347,18
-2022-04-07: 351,01
-2022-04-06: 346,45
-2022-04-05: 337,79
-2022-04-04: 334,55
-2022-04-01: 332,27
-2022-03-31: 332,09
-2022-03-30: 329,14
-2022-03-29: 339,16
-2022-03-28: 339,51
-2022-03-25: 340,92
-2022-03-24: 341,53
-2022-03-23: 338,20
-2022-03-22: 339,63
-2022-03-21: 338,74
-2022-03-18: 337,83
-2022-03-17: 336,00
-2022-03-16: 338,76
-2022-03-11: 347,58
-2022-03-10: 344,26
-2022-03-09: 349,30
-2022-03-08: 356,43
-2022-03-07: 365,95
-2022-03-04: 346,54
-2022-03-03: 341,53
-2022-03-02: 343,29
-2022-03-01: 332,64
-2022-02-28: 330,80
-2022-02-25: 329,25
-2022-02-24: 325,05
-2022-02-23: 313,97
-2022-02-22: 315,52
-2022-02-21: 313,37
-2022-02-18: 313,38
-2022-02-17: 313,45
-2022-02-16: 311,56
-2022-02-15: 313,32
-2022-02-14: 315,59
-2022-02-11: 310,61
-2022-02-10: 308,91
-2022-02-09: 309,05
-2022-02-08: 310,09
-2022-02-07: 309,12
-2022-02-04: 309,24
-2022-02-03: 314,28
-2022-02-02: 314,55
-2022-02-01: 315,69
-2022-01-31: 320,46
-2022-01-28: 320,92
-2022-01-27: 320,34
-2022-01-26: 318,64
-2022-01-25: 319,41
-2022-01-24: 316,70
-2022-01-21: 314,86
-2022-01-20: 314,64
-2022-01-19: 314,36
-2022-01-18: 313,07
-2022-01-17: 311,53
-2022-01-14: 309,60
-2022-01-13: 309,58
-2022-01-12: 313,26
-2022-01-11: 315,33
-2022-01-10: 315,95
-2022-01-07: 317,60
-2022-01-06: 319,41
-2022-01-05: 319,90
-2022-01-04: 323,34
-2022-01-03: 323,87
+Date: 2025-11-04
+Currency	Unit	Rate
+AUD	1	219.32
+BGN	1	198.57
+BRL	1	63.03
+...
 ```
 
-## Referenciák
-[Az MNB dokumentációja](https://www.mnb.hu/letoltes/aktualis-es-a-regebbi-arfolyamok-webszolgaltatasanak-dokumentacioja-1.pdf)
+### Output Formats
+
+#### JSON Format
+
+```bash
+python mnb.py --format json
+```
+
+Output:
+```json
+{
+  "date": "2025-11-04",
+  "rates": [
+    {
+      "currency": "AUD",
+      "unit": 1,
+      "rate": 219.32
+    },
+    ...
+  ]
+}
+```
+
+#### CSV Format
+
+```bash
+python mnb.py --format csv
+```
+
+Output:
+```csv
+Date,Currency,Unit,Rate
+2025-11-04,AUD,1,219.32
+2025-11-04,BGN,1,198.57
+...
+```
+
+### Historical Exchange Rates
+
+Fetch historical rates for a specific currency and date range:
+
+```bash
+python mnb.py --historical --currency USD --start 2024-01-01 --end 2024-12-31
+```
+
+Fetch EUR rates for the last month in JSON format:
+
+```bash
+python mnb.py --historical --currency EUR --start 2024-10-01 --end 2024-11-04 --format json
+```
+
+### Save to File
+
+Output to a file instead of stdout:
+
+```bash
+python mnb.py --format json --output rates.json
+```
+
+### Verbose Logging
+
+Enable detailed logging for debugging:
+
+```bash
+python mnb.py --verbose
+```
+
+### Custom WSDL URL
+
+Use a custom WSDL endpoint (useful for testing):
+
+```bash
+python mnb.py --wsdl-url "http://custom.url/arfolyamok.asmx?wsdl"
+```
+
+## Command-Line Options
+
+```
+usage: mnb.py [-h] [--format {table,json,csv}] [--output OUTPUT] [--historical]
+              [--currency CURRENCY] [--start START] [--end END] [--verbose]
+              [--wsdl-url WSDL_URL]
+
+Fetch exchange rates from the Hungarian National Bank (MNB)
+
+options:
+  -h, --help            show this help message and exit
+  --format {table,json,csv}
+                        Output format (default: table)
+  --output OUTPUT, -o OUTPUT
+                        Output file path (default: stdout)
+  --historical          Fetch historical exchange rates
+  --currency CURRENCY, -c CURRENCY
+                        Currency code for historical rates (default: USD)
+  --start START         Start date for historical rates (YYYY-MM-DD)
+  --end END             End date for historical rates (YYYY-MM-DD)
+  --verbose, -v         Enable verbose logging
+  --wsdl-url WSDL_URL   Custom WSDL URL (default: http://www.mnb.hu/arfolyamok.asmx?wsdl)
+```
+
+## Usage as a Python Library
+
+You can also use the code as a library in your Python projects:
+
+```python
+from mnb import MNBClient, XMLParser
+
+# Initialize client
+client = MNBClient()
+parser = XMLParser()
+
+# Fetch current rates
+xml_data = client.get_current_exchange_rates()
+exchange_rates = parser.parse_current_rates(xml_data)
+
+# Access the data
+print(f"Date: {exchange_rates.date}")
+for rate in exchange_rates.rates:
+    print(f"{rate.currency}: {rate.rate}")
+
+# Fetch historical rates
+xml_data = client.get_exchange_rates("2024-01-01", "2024-12-31", "USD")
+historical_rates = parser.parse_historical_rates(xml_data)
+```
+
+## Development
+
+### Running Tests
+
+Run the test suite with pytest:
+
+```bash
+python -m pytest test_mnb.py -v
+```
+
+Run tests with coverage:
+
+```bash
+python -m pytest test_mnb.py --cov=mnb --cov-report=html
+```
+
+### Code Quality
+
+Format code with black:
+
+```bash
+black mnb.py test_mnb.py
+```
+
+Type checking with mypy:
+
+```bash
+mypy mnb.py
+```
+
+Linting with ruff:
+
+```bash
+ruff check mnb.py
+```
+
+## Architecture
+
+The application is structured with clean separation of concerns:
+
+- **MNBClient**: Handles SOAP web service communication
+- **XMLParser**: Parses XML responses into Python objects
+- **OutputFormatter**: Formats data for different output formats
+- **ExchangeRate/ExchangeRates**: Dataclasses for type-safe data handling
+- **MNBClientError**: Custom exception for error handling
+
+## Error Handling
+
+The application includes comprehensive error handling:
+
+- Network errors (connection failures, timeouts)
+- SOAP service errors
+- XML parsing errors
+- Invalid data formats
+- Custom `MNBClientError` exception for all MNB-specific errors
+
+## Logging
+
+The application uses Python's standard logging module:
+
+- INFO level: Normal operations
+- ERROR level: Errors and exceptions
+- DEBUG level: Detailed debugging info (use `--verbose` flag)
+
+## Supported Currencies
+
+The MNB service provides exchange rates for 33+ currencies including:
+
+- Major currencies: USD, EUR, GBP, JPY, CHF, CAD, AUD
+- European currencies: BGN, CZK, DKK, HRK, NOK, PLN, RON, RSD, SEK
+- Asian currencies: CNY, HKD, IDR, INR, ISK, KRW, MYR, PHP, SGD, THB
+- Others: BRL, ILS, MXN, NZD, RUB, TRY, UAH, ZAR
+
+## API Reference
+
+For detailed API documentation, see the docstrings in the source code. All classes and methods are fully documented with type hints.
+
+## References
+
+- [MNB Official Documentation](https://www.mnb.hu/letoltes/aktualis-es-a-regebbi-arfolyamok-webszolgaltatasanak-dokumentacioja-1.pdf) (Hungarian)
+- [python-zeep Documentation](https://docs.python-zeep.org/)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Changelog
+
+### Version 2.0.0 (Modernization Update)
+
+- ✨ Added type hints throughout the codebase
+- ✨ Added comprehensive error handling and logging
+- ✨ Refactored code with better separation of concerns
+- ✨ Added CLI argument parsing with argparse
+- ✨ Added multiple output formats (JSON, CSV, table)
+- ✨ Added docstrings and improved documentation
+- ✨ Added unit tests with pytest (18 tests)
+- ✨ Updated dependencies to latest versions (zeep 4.3.2)
+- ✨ Added dataclasses for type-safe data handling
+- ✨ Made script importable as a library
+- 🔧 Improved XML parsing with better error handling
+- 📝 Completely rewritten README with modern examples
+
+### Version 1.0.0 (Original)
+
+- Initial proof-of-concept implementation
+- Basic SOAP service communication
+- Simple XML parsing
+- Console output only
+
+## Acknowledgments
+
+This script uses the official MNB (Magyar Nemzeti Bank) SOAP web service for exchange rate data.
